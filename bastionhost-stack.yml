@@ -1,0 +1,100 @@
+Description: >
+  Amefon Affia  / Udacity bastion config
+  Udagram High availability application using CloudFormation
+Parameters:
+
+    EnvironmentName:
+      Description: Single Parameter that we are passing with the env name.
+      Type: String
+
+Resources:
+    # Bastion resources
+    BastionHostProfile:
+      DependsOn: BastionHostPolicy
+      Type: 'AWS::IAM::InstanceProfile'
+      Properties:
+        #Roles:
+          #- !If
+           # - CreateIAMRole
+           # - !Ref BastionHostRole
+           # - !Ref AlternativeIAMRole
+        Path: /
+    EIP1:
+      Type: 'AWS::EC2::EIP'
+      Properties:
+        Domain: vpc
+    EIP2:
+      Type: 'AWS::EC2::EIP'
+      Condition: 2BastionCondition
+      Properties:
+        Domain: vpc
+    EIP3:
+      Type: 'AWS::EC2::EIP'
+      Condition: 3BastionCondition
+      Properties:
+        Domain: vpc
+    EIP4:
+      Type: 'AWS::EC2::EIP'
+      Condition: 4BastionCondition
+      Properties:
+        Domain: vpc
+
+    BastionASG: #ASG-Auto-scaling Group
+        Type: AWS::AutoScaling::AutoScalingGroup
+        Properties:
+          AutoScalingGroupName: !Join ["", [!Ref "AWS::StackName", "BastionHostASG"]]
+          LaunchConfigurationName:
+            - Ref: BastionLaunchConfig
+          VPCZoneIdentifier: #The private network the VPC will contact over SSH
+            - Fn::ImportValue:
+                !Sub "${EnvironmentName}-PUB-NETS"
+          MinSize: "1"
+          DesiredCapacity: "1"
+          MaxSize: "1"
+          Tags:
+            -
+              Key: Name
+              Value: !Join ["", [!Ref "AWS::StackName", "BastionHost"]]
+              PropagateAtLaunch: true
+
+    BastionLaunchConfig:
+        Type: AWS::AutoScaling::LaunchConfiguration
+        Properties:
+          InstanceMarketOptions:
+            MarketType: spot
+            SpotOptions:
+              SpotInstanceType: one-time
+              InstanceInterruptionBehavior: terminate
+          UserData:
+            Fn::Base64:
+              Fn::Join:
+                - ''
+                - - "#!/bin/bash\n"
+                  - "yum -y --security update\n"
+          LaunchConfigurationName: !Join ["", [!Ref "AWS::StackName", "BastionHostLaunchConfiguration"]]
+          AssociatePublicIpAddress: true
+          ImageId: ami-005bdb005fb00e791
+          InstanceType: t2.micro
+          KeyName: udagram-pub-jumpbox-key
+          VpcId:
+            Fn::ImportValue:
+              !Sub "${EnvironmentName}-VPCID"
+          SecurityGroups:
+            - Ref: BastionSecurityGroup
+
+    BastionSecurityGroup:
+      Type: 'AWS::EC2::SecurityGroup'
+      Properties:
+        GroupDescription: Enables SSH Access to Bastion Hosts
+        VpcId:
+          Fn::ImportValue:
+            !Sub "${EnvironmentName}-VPCID"
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 22
+            ToPort: 22
+            CidrIp: 0.0.0.0/0
+          - IpProtocol: icmp
+            FromPort: -1
+            ToPort: -1
+            CidrIp: 0.0.0.0/0

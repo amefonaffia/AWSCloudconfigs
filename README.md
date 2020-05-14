@@ -1,3 +1,3 @@
 # AWS-Udagram-Project
 
-![alt text](https://github.com/amefonaffia/TK-AWSCloudInfra/blob/master/AWSProject.png?raw=true)
+![alt text](https://github.com/amefonaffia/AWSCloudconfigs/blob/master/AWSProject.png?raw=true)

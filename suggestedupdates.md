@@ -1,6 +1,6 @@
 ## Deploy a High-Availability Web App using CloudFormation
 
-### Server.yml
+### Server.yml + Network.yml
 
 1.	Suggestion: Always restart your apache server after making any changes in /var/www folder as sometimes your changes might not reflect.
 2.	Suggestion: You could also take this minSize and maxSize as parameter. In this way, it will be easy to change he min and max size without changing the script code.

@@ -13,12 +13,12 @@ Tags:
     - Key: Name
       Value: !Sub ${EnvironmentName} Public Subnet (AZ1)
 ```
-4.	Really nice implementation of GetAtt function. There are other intrinsic functions also provided by cloudformation. You can read more about them here.
+4.	Really nice implementation of GetAtt function. There are other intrinsic functions also provided by cloudformation. You can read more about them here <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference.html>.
 5.	Now that you have learnt enough about infra, try to deploy a lambda function, that gets and puts some data in a database. You can also learn about best practices in Cloudformation.
 6.	Now that you have learned basics of infra and instance deployment using cloudformation, we would suggest you to go through cloudformation best practices:
-    - Deploying ec2 instances
-    - General best practices
-    - Related to security
+    - Deploying ec2 instances <https://aws.amazon.com/blogs/infrastructure-and-automation/best-practices-for-deploying-ec2-instances-with-aws-cloudformation/>
+    - General best practices <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html>
+    - Related to security <https://aws.amazon.com/blogs/devops/aws-cloudformation-security-best-practices/>
 7.	Students can deploy Windows Servers instead of Linux and use PowerShell scripts to showcase their Windows management skills. Students can use AWS Parameter Store to save sensitive data, such as credentials to showcase their attention to security. Students can use CloudWatch Alarms and CloudWatch custom metrics to showcase their performance and monitoring skills.
 8.	Add and configure Bastion Host.
 
